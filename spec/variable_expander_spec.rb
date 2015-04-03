@@ -179,7 +179,7 @@ describe Etcenv::VariableExpander do
     #   VAR2
     #     VAR3
     let(:variables) do
-      Hash[(1..10).map do |i|
+      Hash[(1..50).map do |i|
         ["VAR#{i}", (1...i).map { |_| "${VAR#{_}}" }.join]
       end]
     end

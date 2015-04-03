@@ -3,7 +3,9 @@ module Etcenv
     class LoopError < StandardError; end
     class DepthLimitError < StandardError; end
 
-    def self.expand(variables, max = 10)
+    MAX_DEPTH_DEFAULT = 50
+
+    def self.expand(variables, max = MAX_DEPTH_DEFAULT)
       new(variables).expand(max)
     end
 
@@ -13,7 +15,7 @@ module Etcenv
 
     attr_reader :variables
 
-    def expand(max = 10)
+    def expand(max = MAX_DEPTH_DEFAULT)
       detect_loop!
 
       result = {}
