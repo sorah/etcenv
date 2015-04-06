@@ -44,7 +44,7 @@ module Etcenv
           options[:output] = path
         end
 
-        opts.on("-m MODE", "--mode MODE", "mode (permission) for output in octal. Default: 0600") do |perm|
+        opts.on("-m MODE", "--mode MODE", "mode (permission) to use when creating --output file, in octal. Default: 0600") do |perm|
           options[:perm] = perm.to_i(8)
         end
 
