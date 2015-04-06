@@ -1,3 +1,5 @@
+require 'etcenv/utils'
+
 module Etcenv
   class VariableExpander
     class LoopError < StandardError; end
@@ -76,7 +78,7 @@ module Etcenv
       end
       solve.call(root_variables)
 
-      uniq_with_keeping_first_appearance(order).reverse
+      Utils.uniq_with_keeping_first_appearance(order).reverse
     end
 
     private
@@ -115,17 +117,6 @@ module Etcenv
           variables[match['name']].to_s
         end
       end
-    end
-
-    def uniq_with_keeping_first_appearance(array)
-      set = {}
-      result = []
-      array.each do |x|
-        next if set[x]
-        result.push x
-        set[x] = true
-      end
-      result
     end
   end
 end
