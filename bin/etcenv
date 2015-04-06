@@ -1,1 +1,5 @@
 #!/usr/bin/env ruby
+require 'etcenv'
+require 'etcenv/cli'
+
+exit Etcenv::Cli.new(*ARGV).run

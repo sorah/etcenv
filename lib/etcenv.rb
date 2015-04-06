@@ -1,5 +1,5 @@
-require "etcenv/version"
-
-module Etcenv
-  # Your code goes here...
-end
+require 'etcenv/version'
+require 'etcenv/environment'
+require 'etcenv/variable_expander'
+require 'etcenv/dockerenv_file'
+require 'etcenv/dotenv_file'
