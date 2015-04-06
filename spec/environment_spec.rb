@@ -13,7 +13,8 @@ describe Etcenv::Environment do
         [k.to_s, double("etcd-node #{new_path.join(?/)}",
           key: "/#{new_path.join(?/)}",
           value: v,
-          dir: false
+          dir: false,
+          modified_index: 0,
         )]
       end
     end]

@@ -11,35 +11,43 @@ module Etcenv
       @etcd = etcd
       @root_key = root_key
       @max_depth = max_depth
+      @lock = Mutex.new
       load
     end
     
-    attr_reader :root_key, :env
+    attr_reader :root_key, :env, :etcd
     attr_accessor :max_depth
 
-    def includes
-      @includes ||= solve_include_order(root_key)
+    def modified_indices
+      @modified_indices ||= {}
     end
+
+    def load
+      @lock.synchronize do
+        flush
+        env = {}
+        includes.each do |name|
+          env.merge! fetch(name)
+        end
+        env.delete '_include'
+        @env = env
+      end
+      self
+    end
+
+    private
 
     def flush
       @env = {}
       @includes = nil
       @cache = {}
+      @modified_indices = {}
       self
     end
 
-    def load
-      flush
-      env = {}
-      includes.each do |name|
-        env.merge! fetch(name)
-      end
-      env.delete '_include'
-      @env = env
-      self
+    def includes
+      @includes ||= solve_include_order(root_key)
     end
-
-    private
 
     def default_prefix
       root_key.sub(/^.*\//, '')
@@ -68,6 +76,7 @@ module Etcenv
       end
 
       dir = {}
+      index = 0
 
       node.children.each do |child|
         name = child.key.sub(/^.*\//, '')
@@ -75,9 +84,11 @@ module Etcenv
           next
         else
           dir[name] = child.value
+          index = [index, child.modified_index].max
         end
       end
 
+      modified_indices[key] = index
       cache[key] = dir
     end
 

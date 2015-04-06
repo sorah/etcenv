@@ -1,9 +1,11 @@
 require 'optparse'
+require 'thread'
 require 'openssl'
 require 'etcd'
 require 'uri'
 require 'etcenv/dockerenv_file'
 require 'etcenv/dotenv_file'
+require 'etcenv/watcher'
 
 module Etcenv
   class Cli
@@ -26,6 +28,8 @@ module Etcenv
       case options[:mode]
       when :oneshot
         oneshot
+      when :watch
+        watch
       else
         raise "[BUG] unknown mode"
       end
@@ -38,6 +42,10 @@ module Etcenv
         opts.on("-h", "--help", "show this help") do
           puts opts
           exit 0
+        end
+
+        opts.on("--watch", "-w", "continuous update mode") do
+          options[:mode] = :watch
         end
 
         opts.on("-o PATH", "--output PATH", "save to speciifed file") do |path|
@@ -94,6 +102,40 @@ module Etcenv
       dump_env(env)
 
       0
+    end
+
+    def watch
+      if argv.empty?
+        $stderr.puts "error: no KEY specified. See --help for detail"
+        return 1
+      end
+
+      envs = argv.map { |key| Environment.new(etcd, key) }
+
+      watchers = envs.map { |env| Watcher.new(env, verbose: true) }
+      Thread.abort_on_exception = true
+
+      dumper_ch = Queue.new
+      dumper = Thread.new do
+        loop do
+          $stderr.puts "[dumper] dumping env"
+          env = envs.inject(nil) do |result, env|
+            result ? result.merge(env.env) : env.env
+          end
+          dump_env(env)
+          dumper_ch.pop
+        end
+      end
+
+      watchers.map do |watcher|
+        Thread.new do
+          watcher.auto_reload_loop do
+            dumper_ch << true
+          end
+        end
+      end
+
+      loop { sleep 1 }
     end
 
     private
