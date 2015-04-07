@@ -41,6 +41,8 @@ module Etcenv
       etcd.watch(key, recursive: true, index: index.succ, timeout: WATCH_TIMEOUT)
       $stderr.puts "[watcher] dir #{key} has updated" if verbose
       ch << key
+    rescue Net::ReadTimeout
+      retry
     end
   end
 end
