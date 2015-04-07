@@ -29,10 +29,15 @@ module Etcenv
 
     def auto_reload_loop
       loop do
-        watch
-        $stderr.puts "[watcher] reloading env #{env.root_key}" if verbose
-        env.load
-        yield env if block_given?
+        begin
+          watch
+          $stderr.puts "[watcher] reloading env #{env.root_key}" if verbose
+          env.load
+          yield env if block_given?
+        rescue => e
+          $stderr.puts "[watcher][error] Failed to reload env #{env.root_key}: #{e.inspect}"
+          $stderr.puts "\t#{e.backtrace.join("\n\t")}"
+        end
       end
     end
 
