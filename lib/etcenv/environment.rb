@@ -80,11 +80,12 @@ module Etcenv
 
       node.children.each do |child|
         name = child.key.sub(/^.*\//, '')
+
+        index = [index, child.modified_index].max
         if child.dir
           next
         else
           dir[name] = child.value
-          index = [index, child.modified_index].max
         end
       end
 
