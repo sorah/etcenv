@@ -1,7 +1,5 @@
 # Etcenv: Dump etcd keys into dotenv file or docker env file
 
-__Still in early development phase! No working code yet.__
-
 ## Installation
 
     $ gem install etcenv
