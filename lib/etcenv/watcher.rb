@@ -18,7 +18,9 @@ module Etcenv
     def watch
       ch = Queue.new
       threads = env.modified_indices.map do |key, index|
-        Thread.new(ch, key, index, &method(:watch_thread))
+        Thread.new(ch, key, index, &method(:watch_thread)).tap do |th|
+          th.abort_on_exception = true
+        end
       end
       report = ch.pop
       threads.each(&:kill)
