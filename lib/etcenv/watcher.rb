@@ -2,6 +2,8 @@ require 'thread'
 
 module Etcenv
   class Watcher
+    WATCH_TIMEOUT = 120
+
     def initialize(env, verbose: false)
       @env = env
       @verbose = verbose
@@ -36,7 +38,7 @@ module Etcenv
 
     def watch_thread(ch, key, index)
       $stderr.puts "[watcher] waiting for change on #{key} (index: #{index.succ})" if verbose
-      etcd.watch(key, recursive: true, index: index.succ)
+      etcd.watch(key, recursive: true, index: index.succ, timeout: WATCH_TIMEOUT)
       $stderr.puts "[watcher] dir #{key} has updated" if verbose
       ch << key
     end
