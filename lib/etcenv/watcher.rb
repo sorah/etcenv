@@ -7,6 +7,8 @@ module Etcenv
     def initialize(env, verbose: false)
       @env = env
       @verbose = verbose
+      @indices = {}
+      @lock = Mutex.new
     end
 
     attr_reader :env, :verbose
@@ -45,7 +47,12 @@ module Etcenv
 
     def watch_thread(ch, key, index)
       $stderr.puts "[watcher] waiting for change on #{key} (index: #{index.succ})" if verbose
-      etcd.watch(key, recursive: true, index: index.succ, timeout: WATCH_TIMEOUT)
+      response = etcd.watch(key, recursive: true, index: [@indices[key] || 0, index].max.succ, timeout: WATCH_TIMEOUT)
+      @lock.synchronize do
+        # Record modified_index in watcher itself; Because the latest index may be hidden in normal response
+        # e.g. unlisted keys, removed keys
+        @indices[key] = response.node.modified_index
+      end
       $stderr.puts "[watcher] dir #{key} has updated" if verbose
       ch << key
     rescue Net::ReadTimeout
