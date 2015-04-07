@@ -48,6 +48,14 @@ module Etcenv
           options[:mode] = :watch
         end
 
+        opts.on("--daemon", "-d", "daemonize") do
+          options[:daemonize] = true
+        end
+
+        opts.on("--pidfile PIDFILE", "-p PIDFILE", "pidfile to use when deamonizing") do |pidpath|
+          options[:pidfile] = pidpath
+        end
+
         opts.on("-o PATH", "--output PATH", "save to speciifed file") do |path|
           options[:output] = path
         end
@@ -108,6 +116,14 @@ module Etcenv
       if argv.empty?
         $stderr.puts "error: no KEY specified. See --help for detail"
         return 1
+      end
+
+      if options[:daemonize]
+        $stderr.puts "Daemonizing"
+        Process.daemon(nil, true)
+        if options[:pidfile]
+          File.write options[:pidfile], "#{$$}\n"
+        end
       end
 
       envs = argv.map { |key| Environment.new(etcd, key) }
