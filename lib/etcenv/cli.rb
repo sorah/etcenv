@@ -141,6 +141,7 @@ module Etcenv
           dumper_ch.pop
         end
       end
+      dumper.abort_on_exception = true
 
       watchers.map do |watcher|
         Thread.new do
