@@ -290,4 +290,44 @@ describe Etcenv::Environment do
       expect { subject }.to raise_error(Etcenv::Environment::LoopError)
     }
   end
+
+  context "with relative include path" do
+    let(:root_key) { '/prefix/a' }
+    let(:tree) do
+      {
+        prefix: {
+          a: {
+            ".include" => "b",
+            A: "a",
+          },
+          b: {
+            B: "b",
+          },
+        },
+      }
+    end
+
+    it { is_expected.to eq("A" => "a", "B" => "b",) }
+  end
+
+  context "with absolute include path" do
+    let(:root_key) { '/prefix/a' }
+    let(:tree) do
+      {
+        prefix: {
+          a: {
+            ".include" => "/another_dir/b",
+            A: "a",
+          },
+        },
+        another_dir: {
+          b: {
+            B: "b",
+          },
+        },
+      }
+    end
+
+    it { is_expected.to eq("A" => "a", "B" => "b",) }
+  end
 end

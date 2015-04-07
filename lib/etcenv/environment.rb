@@ -50,7 +50,7 @@ module Etcenv
     end
 
     def default_prefix
-      root_key.sub(/^.*\//, '')
+      root_key.sub(/^(.*)\/.+?$/, '\1')
     end
 
     def resolve_key(key)

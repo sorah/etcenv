@@ -129,7 +129,6 @@ module Etcenv
       envs = argv.map { |key| Environment.new(etcd, key) }
 
       watchers = envs.map { |env| Watcher.new(env, verbose: true) }
-      Thread.abort_on_exception = true
 
       dumper_ch = Queue.new
       dumper = Thread.new do
