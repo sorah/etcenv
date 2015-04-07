@@ -4,7 +4,7 @@ module Etcenv
     class DepthLimitError < StandardError; end
     class LoopError < StandardError; end
 
-    INCLUDE_KEY = '_include'
+    INCLUDE_KEY = '.include'
     MAX_DEPTH_DEFAULT = 10
 
     def initialize(etcd, root_key, max_depth: MAX_DEPTH_DEFAULT)
@@ -29,7 +29,7 @@ module Etcenv
         includes.each do |name|
           env.merge! fetch(name)
         end
-        env.delete '_include'
+        env.delete '.include'
         @env = env
       end
       self

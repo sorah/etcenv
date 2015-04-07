@@ -67,12 +67,12 @@ In docker mode, etcenv evaluates `${...}` expansion like dotenv do.
 
 ### Include other directory's variables
 
-Set directory path to `_include`. Directories can be specified multiple, separated by comma.
+Set directory path to `.include`. Directories can be specified multiple, separated by comma.
 
 ```
 etcdctl mkdir /common
 etcdctl set /common/COMMON_SECRET xxx
-etcdctl set /my-app/_include /common
+etcdctl set /my-app/.include /common
 ```
 
 Also, you can omit path of parent directory:
@@ -82,11 +82,11 @@ etcdctl mkdir /envs/common
 etcdctl set /envs/common/COMMON_SECRET xxx
 
 etcdctl mkdir /envs/my-app
-etcdctl set /envs/my-app/_include common
+etcdctl set /envs/my-app/.include common
 ```
 
-- `_include` will be applied recursively (up to 10 times by default). If `_include` is looping, it'll be an error.
-- For multiple `_include`, value for same key may be overwritten.
+- `.include` will be applied recursively (up to 10 times by default). If `.include` is looping, it'll be an error.
+- For multiple `.include`, value for same key may be overwritten.
   - If `a` includes `b`,`c` and `b` includes `d`, result for `a` will be: `d`, `b`, `c`, then `a`.
 
 ## Development

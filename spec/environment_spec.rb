@@ -98,7 +98,7 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           FOO: "foo",
           BAR: "bar",
         },
@@ -115,7 +115,7 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           FOO: "foo",
           BAR: "bar",
         },
@@ -132,23 +132,23 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b0",
+          ".include" => "b0",
           A0: "a0",
         },
         b0: {
-          _include: "c0,c1,c2,d1",
+          ".include" => "c0,c1,c2,d1",
           B0: "b0",
         },
         c0: {
-          _include: "d0",
+          ".include" => "d0",
           C0: "c0",
         },
         c1: {
-          _include: "d0",
+          ".include" => "d0",
           C1: "c1",
         },
         c2: {
-          _include: "d0,d1",
+          ".include" => "d0,d1",
           C2: "c2",
         },
         d0: {
@@ -167,11 +167,11 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           A: "a",
         },
         b: {
-          _include: "c",
+          ".include" => "c",
           A: "b",
           B: "b",
         },
@@ -196,17 +196,17 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           A: "a",
         },
         b: {
-          _include: "c,d",
+          ".include" => "c,d",
           A: "b",
           B: "b",
           D: "b",
         },
         c: {
-          _include: "d",
+          ".include" => "d",
           A: "c",
           B: "c",
           C: "c",
@@ -231,16 +231,16 @@ describe Etcenv::Environment do
   context "with too deep including" do
     let(:tree) do
       {
-        a: { _include: "b", A: "0", },
-        b: { _include: "c", A: "1", },
-        c: { _include: "d", A: "2", },
-        d: { _include: "e", A: "3", },
-        e: { _include: "f", A: "4", },
-        f: { _include: "g", A: "5", },
-        g: { _include: "h", A: "6", },
-        h: { _include: "i", A: "7", },
-        i: { _include: "j", A: "8", },
-        j: { _include: "k", A: "9", },
+        a: { ".include" => "b", A: "0", },
+        b: { ".include" => "c", A: "1", },
+        c: { ".include" => "d", A: "2", },
+        d: { ".include" => "e", A: "3", },
+        e: { ".include" => "f", A: "4", },
+        f: { ".include" => "g", A: "5", },
+        g: { ".include" => "h", A: "6", },
+        h: { ".include" => "i", A: "7", },
+        i: { ".include" => "j", A: "8", },
+        j: { ".include" => "k", A: "9", },
         k: { A: "10", },
       }
     end
@@ -254,11 +254,11 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           A: "a",
         },
         b: {
-          _include: "a",
+          ".include" => "a",
           B: "b",
         },
       }
@@ -273,14 +273,14 @@ describe Etcenv::Environment do
     let(:tree) do
       {
         a: {
-          _include: "b",
+          ".include" => "b",
           A: "a",
         },
         b: {
-          _include: "c",
+          ".include" => "c",
         },
         c: {
-          _include: "a",
+          ".include" => "a",
           C: "c",
         },
       }
