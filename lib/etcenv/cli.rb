@@ -104,7 +104,7 @@ module Etcenv
         return 1
       end
       env = argv.inject(nil) do |env, key|
-        new_env = Environment.new(etcd, key).env
+        new_env = Environment.new(etcd, key).expanded_env
         env ? env.merge(new_env) : new_env
       end
       dump_env(env)

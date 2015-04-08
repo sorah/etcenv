@@ -8,12 +8,8 @@ module Etcenv
 
     attr_reader :env
 
-    def expanded_env
-      VariableExpander.expand @env
-    end
-
     def lines
-      expanded_env.map { |k, v| make_dotenv_line(k, v) }
+      env.map { |k, v| make_dotenv_line(k, v) }
     end
 
     def to_s

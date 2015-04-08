@@ -1,3 +1,5 @@
+require 'etcenv/variable_expander'
+
 module Etcenv
   class Environment
     class NotDirectory < StandardError; end
@@ -17,6 +19,10 @@ module Etcenv
     
     attr_reader :root_key, :env, :etcd
     attr_accessor :max_depth
+
+    def expanded_env
+      VariableExpander.expand(env)
+    end
 
     def modified_indices
       @modified_indices ||= {}
