@@ -1,5 +1,7 @@
 # Etcenv: Dump etcd keys into dotenv file or docker env file
 
+[![Build Status](https://travis-ci.org/sorah/etcenv.svg)](https://travis-ci.org/sorah/etcenv)
+
 ## Installation
 
     $ gem install etcenv

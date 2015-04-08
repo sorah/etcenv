@@ -1,3 +1,16 @@
 language: ruby
+sudo: false
+cache: bundler
 rvm:
-  - 2.2.0
+  - "2.2"
+  - "2.1"
+  - "2.0.0"
+  - "ruby-head"
+
+matrix:
+  allow_failures:
+    - rvm:
+      - "ruby-head"
+  fast_finish: true
+
+script: bundle exec rspec -fd ./spec
