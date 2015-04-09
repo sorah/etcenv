@@ -5,6 +5,7 @@ module Etcenv
     class NotDirectory < StandardError; end
     class DepthLimitError < StandardError; end
     class LoopError < StandardError; end
+    class KeyNotFound < StandardError; end
 
     INCLUDE_KEY = '.include'
     MAX_DEPTH_DEFAULT = 10
@@ -98,6 +99,8 @@ module Etcenv
 
       modified_indices[key] = index
       cache[key] = dir
+    rescue Etcd::KeyNotFound
+      raise KeyNotFound, "Couldn't find key #{key}"
     end
 
     def solve_include_order(name, path = [])
