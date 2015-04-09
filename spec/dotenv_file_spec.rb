@@ -26,6 +26,12 @@ describe Etcenv::DotenvFile do
       it { is_expected.to eq 'KEY="a\nb"' + "\n" }
     end
 
+    context "for env contains multiple lines (CR+LF)" do
+      let(:env) { {'KEY' => "a\r\nb"} }
+
+      it { is_expected.to eq 'KEY="a\nb"' + "\n" }
+    end
+
     context "for env contains #" do
       let(:env) { {'KEY' => "a#b"} }
 

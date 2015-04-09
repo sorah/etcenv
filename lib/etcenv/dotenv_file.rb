@@ -18,11 +18,11 @@ module Etcenv
 
     private
 
-    SHOULD_QUOTE = /\n|"|#|\$/
+    SHOULD_QUOTE = /\r|\n|"|#|\$/
     def make_dotenv_line(k,v)
       if v.match(SHOULD_QUOTE)
         v.gsub!('"', '\"')
-        v.gsub!("\n", '\n')
+        v.gsub!(/\r?\n/, '\n')
         v.gsub!(/\$([^(])/, '\$\1')
         "#{k}=\"#{v}\""
       else
