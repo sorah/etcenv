@@ -77,22 +77,23 @@ module Etcenv
 
       node = @etcd.get(key).node
 
-      unless node.dir
-        raise NotDirectory, "#{key} is not a directory"
-      end
+      if node.dir
+        dir = {}
+        index = 0
 
-      dir = {}
-      index = 0
+        node.children.each do |child|
+          name = child.key.sub(/^.*\//, '')
 
-      node.children.each do |child|
-        name = child.key.sub(/^.*\//, '')
-
-        index = [index, child.modified_index].max
-        if child.dir
-          next
-        else
-          dir[name] = child.value
+          index = [index, child.modified_index].max
+          if child.dir
+            next
+          else
+            dir[name] = child.value
+          end
         end
+      else
+        dir = {key.sub(/^.*\//, '') => node.value}
+        index = node.modified_index
       end
 
       modified_indices[key] = index

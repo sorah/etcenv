@@ -330,4 +330,21 @@ describe Etcenv::Environment do
 
     it { is_expected.to eq("A" => "a", "B" => "b",) }
   end
+
+  context "with including key" do
+    let(:tree) do
+      {
+        a: {
+          ".include" => "secrets/B",
+          A: "a",
+        },
+        secrets: {
+          B: "b",
+          C: "c",
+        },
+      }
+    end
+
+    it { is_expected.to eq("A" => "a", "B" => "b",) }
+  end
 end
