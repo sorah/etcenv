@@ -15,6 +15,7 @@ describe Etcenv::Environment do
           value: v,
           dir: false,
           modified_index: 0,
+          etcvault_error: nil,
         )]
       end
     end]
@@ -35,6 +36,7 @@ describe Etcenv::Environment do
            children: children,
            value: nil,
            dir: true,
+           etcvault_error: nil,
           )
   end
 

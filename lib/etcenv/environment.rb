@@ -1,4 +1,6 @@
 require 'etcenv/variable_expander'
+require 'etcd'
+require 'etcd/etcvault'
 
 module Etcenv
   class Environment
@@ -6,6 +8,7 @@ module Etcenv
     class DepthLimitError < StandardError; end
     class LoopError < StandardError; end
     class KeyNotFound < StandardError; end
+    class EtcvaultFailure < StandardError; end
 
     INCLUDE_KEY = '.include'
     MAX_DEPTH_DEFAULT = 10
@@ -77,6 +80,10 @@ module Etcenv
       return cache[key] if cache[key]
 
       node = @etcd.get(key).node
+
+      if node.etcvault_error
+        raise EtcvaultFailure, node.etcvault_error
+      end
 
       if node.dir
         dir = {}
