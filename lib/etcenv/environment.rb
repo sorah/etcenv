@@ -97,6 +97,9 @@ module Etcenv
             next
           else
             dir[name] = child.value
+            if node.etcvault_error
+              raise EtcvaultFailure, node.etcvault_error
+            end
           end
         end
       else
