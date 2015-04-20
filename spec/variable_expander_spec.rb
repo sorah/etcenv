@@ -188,4 +188,12 @@ describe Etcenv::VariableExpander do
       expect { subject }.to raise_error(Etcenv::VariableExpander::DepthLimitError)
     end
   end
+
+  context "empty" do
+    let(:variables) do
+      {}
+    end
+
+    it { is_expected.to eq({}) }
+  end
 end

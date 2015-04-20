@@ -54,7 +54,7 @@ module Etcenv
     end
 
     def detect_loop!
-      if root_variables.empty?
+      if !variables.empty? && root_variables.empty?
         raise LoopError, "there's no possible root variables (variables which don't have dependee)"
       else
         dependees_by_variable.each do |k, deps|
