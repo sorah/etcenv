@@ -135,7 +135,8 @@ module Etcenv
         loop do
           $stderr.puts "[dumper] dumping env"
           env = envs.inject(nil) do |result, env|
-            result ? result.merge(env.env) : env.env
+            new_env = env.expanded_env
+            result ? result.merge(new_env) : new_env
           end
           dump_env(env)
           dumper_ch.pop
