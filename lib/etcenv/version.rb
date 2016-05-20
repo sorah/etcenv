@@ -1,3 +1,3 @@
 module Etcenv
-  VERSION = "0.5.4"
+  VERSION = "0.6.0"
 end
