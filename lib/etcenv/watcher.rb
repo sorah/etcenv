@@ -47,7 +47,9 @@ module Etcenv
 
     def watch_thread(ch, key, index)
       $stderr.puts "[watcher] waiting for change on #{key} (index: #{index.succ})" if verbose
-      response = etcd.watch(key, recursive: true, index: [@indices[key] || 0, index].max.succ, timeout: WATCH_TIMEOUT)
+      index = [@indices[key], index].compact.max
+      index += 1 if index
+      response = etcd.watch(key, recursive: true, index: index, timeout: WATCH_TIMEOUT)
       @lock.synchronize do
         # Record modified_index in watcher itself; Because the latest index may be hidden in normal response
         # e.g. unlisted keys, removed keys
