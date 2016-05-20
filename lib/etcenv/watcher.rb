@@ -57,6 +57,13 @@ module Etcenv
       end
       $stderr.puts "[watcher] dir #{key} has updated" if verbose
       ch << key
+    rescue Etcd::EventIndexCleared => e
+      $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}, trying to get X-Etcd-Index"
+      @lock.synchronize do
+        @indices[key] = etcd.get(key).etcd_index
+      end
+      $stderr.puts "[watcher] Updated #{key.inspect} index to #{@indices[key]}, retrying watch"
+      retry
     rescue Net::ReadTimeout
       retry
     end
