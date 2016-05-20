@@ -30,6 +30,7 @@ module Etcenv
     end
 
     def auto_reload_loop
+      retries = 0
       loop do
         begin
           watch
@@ -37,8 +38,15 @@ module Etcenv
           env.load
           yield env if block_given?
         rescue => e
+          retries += 1
+          interval = (2**retries) * 0.1
+
           $stderr.puts "[watcher][error] Failed to reload env #{env.root_key}: #{e.inspect}"
           $stderr.puts "\t#{e.backtrace.join("\n\t")}"
+          $stderr.puts "[watcher][error] RETRYING reload #{env.root_key} in #{'%.2f' % interval} sec"
+          sleep interval
+        else
+          retries = 0
         end
       end
     end
