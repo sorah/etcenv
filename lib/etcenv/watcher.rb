@@ -46,6 +46,20 @@ module Etcenv
     private
 
     def watch_thread(ch, key, index)
+      tries = 0
+      loop do
+        if try_watch(key, index)
+          ch << key
+          break
+        end
+        interval = (2 ** tries) * 0.1
+        $stderr.puts "[watcher] RETRYING; #{key.inspect} watch will resume after #{'%.2f' % interval} sec"
+        sleep interval
+        tries += 1
+      end
+    end
+
+    def try_watch(key, index)
       $stderr.puts "[watcher] waiting for change on #{key} (index: #{index.succ})" if verbose
       index = [@indices[key], index].compact.max
       index += 1 if index
@@ -57,15 +71,17 @@ module Etcenv
       end
       $stderr.puts "[watcher] dir #{key} has updated" if verbose
       ch << key
+      return true
     rescue Etcd::EventIndexCleared => e
       $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}, trying to get X-Etcd-Index"
       @lock.synchronize do
         @indices[key] = etcd.get(key).etcd_index
       end
-      $stderr.puts "[watcher] Updated #{key.inspect} index to #{@indices[key]}, retrying watch"
-      retry
+      $stderr.puts "[watcher] Updated #{key.inspect} index to #{@indices[key]}"
+      return nil
     rescue Net::ReadTimeout
-      retry
+      $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}"
+      return nil
     end
   end
 end
