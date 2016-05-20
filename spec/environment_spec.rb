@@ -59,6 +59,7 @@ describe Etcenv::Environment do
           double('etcd response',
             node: node,
             value: node.value,
+             etcd_index: 1,
           )
         else
           raise Etcd::KeyNotFound

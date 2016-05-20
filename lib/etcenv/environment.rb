@@ -21,7 +21,7 @@ module Etcenv
       load
     end
     
-    attr_reader :root_key, :env, :etcd
+    attr_reader :root_key, :env, :etcd, :cluster_index
     attr_accessor :max_depth
 
     def expanded_env
@@ -30,6 +30,10 @@ module Etcenv
 
     def modified_indices
       @modified_indices ||= {}
+    end
+
+    def keys
+      modified_indices.keys
     end
 
     def load
@@ -52,6 +56,7 @@ module Etcenv
       @includes = nil
       @cache = {}
       @modified_indices = {}
+      @cluster_index = nil
       self
     end
 
@@ -79,7 +84,9 @@ module Etcenv
       key = resolve_key(name)
       return cache[key] if cache[key]
 
-      node = @etcd.get(key).node
+      resp = @etcd.get(key)
+      node = resp.node
+      @cluster_index = [@cluster_index, resp.etcd_index].compact.min
 
       if node.etcvault_error
         raise EtcvaultFailure, node.etcvault_error
