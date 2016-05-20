@@ -73,14 +73,14 @@ module Etcenv
       ch << key
       return true
     rescue Etcd::EventIndexCleared => e
-      $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}, trying to get X-Etcd-Index"
+      $stderr.puts "[watcher][warn] #{e.inspect} on key #{key.inspect}, trying to get X-Etcd-Index" if verbose
       @lock.synchronize do
         @indices[key] = etcd.get(key).etcd_index
       end
-      $stderr.puts "[watcher] Updated #{key.inspect} index to #{@indices[key]}"
+      $stderr.puts "[watcher][warn] Updated #{key.inspect} index to #{@indices[key]}" if verbose
       return nil
     rescue Net::ReadTimeout
-      $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}"
+      $stderr.puts "[watcher] #{e.inspect} on key #{key.inspect}" if verbose
       return nil
     end
   end
